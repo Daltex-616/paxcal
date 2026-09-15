@@ -48,7 +48,7 @@ export default function PaxWalletLanding() {
               PAX WALLET, CALCULÁ TUS <br /> AHORROS CON LA TASA MÁS BAJA
             </h1>
             <p className="text-xl md:text-2xl text-[var(--color-violeta-oscuro)] font-medium max-w-2xl">
-              Descubrí cuánto ahorrás usando la tasa de cobranza del 0.5%.
+              Descubrí cuánto ahorrás usando una tasa del 0.5%.
             </p>
             <div className="pt-4">
               <button className="bg-[var(--color-violeta)] hover:bg-[var(--color-violeta-oscuro)] text-white font-bold py-3.5 px-8 rounded-lg transition-colors text-lg shadow-lg">
