@@ -75,7 +75,7 @@ export default function PaxWalletLanding() {
                 <input
                   type="range"
                   min="100000"
-                  max="50000000000"
+                  max="5000000000"
                   step="100000"
                   value={monto}
                   onChange={(e) => setMonto(Number(e.target.value))}
