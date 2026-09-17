@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { Mail } from 'lucide-react'; 
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
-export default function ContactForm({ className = "" }) {
+// 1. Componente Interno que maneja la lógica del formulario
+const InnerContactForm = ({ className }) => {
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Hook de reCAPTCHA para generar el token
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +20,21 @@ export default function ContactForm({ className = "" }) {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      // Hacemos el envío directo sin reCAPTCHA
+      // Verificamos que reCAPTCHA haya cargado
+      if (!executeRecaptcha) {
+        throw new Error("El sistema anti-spam aún está cargando. Reintentá en unos segundos.");
+      }
+
+      // Generamos el token de seguridad
+      const token = await executeRecaptcha("formis_embed_submit");
+      if (!token) {
+        throw new Error("No se pudo validar el anti-spam.");
+      }
+      
+      // Adjuntamos el token a los datos que enviamos
+      data._recaptcha = token;
+
+      // Hacemos el envío a Formis
       const response = await fetch("https://www.formis.online/api/submit/X8Lc2Rm5eqTvCmb8HnYtuNDAhYu2/TW66kfLHA4QE62PWnZ9D", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -28,7 +47,7 @@ export default function ContactForm({ className = "" }) {
         throw new Error(message);
       }
 
-      // Éxito
+      // Si todo sale bien
       form.reset();
       setStatus("Recibimos tu mensaje. ¡Muchas gracias!");
     } catch (error) {
@@ -51,77 +70,37 @@ export default function ContactForm({ className = "" }) {
             </p>
           </div>
 
-          <form id="contact-form" onSubmit={handleSubmit} className="max-w-6xl mx-auto mt-10 md:mt-20 space-y-6 text-left">
+          <form onSubmit={handleSubmit} className="max-w-6xl mx-auto mt-10 md:mt-20 space-y-6 text-left">
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col text-center md:text-left gap-2 md:flex-row md:items-center md:gap-2">
                 <label className="text-xl md:text-2xl font-[var(--font-family-heading)] md:whitespace-nowrap md:pr-2" htmlFor="name">Me llamo</label>
-                <input
-                  id="name"
-                  name="name"
-                  required
-                  className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl placeholder-[var(--color-violeta-semi)] outline-none md:flex-1"
-                  placeholder="Tu nombre"
-                  autoComplete="off"
-                />
+                <input id="name" name="name" required className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl outline-none md:flex-1" placeholder="Tu nombre" autoComplete="off" />
               </div>
               <div className="flex flex-col text-center md:text-left gap-2 md:flex-row md:items-center md:gap-2">
                 <label className="text-xl md:text-2xl font-[var(--font-family-heading)] md:whitespace-nowrap md:pr-2" htmlFor="company">y trabajo en</label>
-                <input
-                  id="company"
-                  name="company"
-                  required
-                  className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl placeholder-[var(--color-violeta-semi)] outline-none md:flex-1"
-                  placeholder="Empresa / Agencia"
-                  autoComplete="off"
-                />
+                <input id="company" name="company" required className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl outline-none md:flex-1" placeholder="Empresa / Agencia" autoComplete="off" />
               </div>
             </div>
 
             <div className="flex flex-col text-center md:text-left gap-2 md:flex-row md:items-center md:gap-2">
               <label className="text-xl md:text-2xl font-[var(--font-family-heading)] md:whitespace-nowrap md:pr-2" htmlFor="products">Nuestros principales productos son</label>
-              <input
-                id="products"
-                name="products"
-                required
-                className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl placeholder-[var(--color-violeta-semi)] outline-none md:flex-1"
-                placeholder="Ej: viajes estudiantiles, grupales..."
-                autoComplete="off"
-              />
+              <input id="products" name="products" required className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl outline-none md:flex-1" placeholder="Ej: viajes estudiantiles, grupales..." autoComplete="off" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2 text-center md:text-left md:flex-row md:items-center md:gap-2">
                 <label className="text-xl md:text-2xl font-[var(--font-family-heading)] md:whitespace-nowrap md:pr-2" htmlFor="phone">Mi teléfono es</label>
-                <input
-                  id="phone"
-                  name="phone"
-                  required
-                  className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl placeholder-[var(--color-violeta-semi)] outline-none md:flex-1"
-                  placeholder="Teléfono"
-                  autoComplete="off"
-                />
+                <input id="phone" name="phone" required className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl outline-none md:flex-1" placeholder="Teléfono" autoComplete="off" />
               </div>
               <div className="flex flex-col gap-2 text-center md:text-left md:flex-row md:items-center md:gap-2">
                 <label className="text-xl md:text-2xl font-[var(--font-family-heading)] md:whitespace-nowrap md:pr-2" htmlFor="email">y mi correo es</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl placeholder-[var(--color-violeta-semi)] outline-none md:flex-1"
-                  placeholder="tu@correo.com"
-                  autoComplete="off"
-                />
+                <input id="email" name="email" type="email" required className="w-full bg-transparent border-b border-[var(--color-violeta)] py-2 text-[var(--color-violeta-semi)] text-center md:text-left text-xl md:text-2xl outline-none md:flex-1" placeholder="tu@correo.com" autoComplete="off" />
               </div>
             </div>
 
             <div className="text-center mt-10 md:mt-20">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full md:w-auto bg-transparent border border-[var(--color-amarillo)] cursor-pointer text-xl text-[var(--color-amarillo)] font-bold px-10 py-4 rounded-lg hover:bg-[var(--color-amarillo)] hover:text-[var(--color-violeta-oscuro)] transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <button type="submit" disabled={isLoading} className="w-full md:w-auto bg-transparent border border-[var(--color-amarillo)] cursor-pointer text-xl text-[var(--color-amarillo)] font-bold px-10 py-4 rounded-lg hover:bg-[var(--color-amarillo)] hover:text-[var(--color-violeta-oscuro)] transition disabled:opacity-50 disabled:cursor-not-allowed">
                 {isLoading ? "Enviando..." : "Enviar mensaje"}
               </button>
             </div>
@@ -143,5 +122,17 @@ export default function ContactForm({ className = "" }) {
         </div>
       </div>
     </div>
+  );
+};
+
+// 2. Componente Principal (Provider)
+export default function ContactForm({ className = "" }) {
+  // ACA ESTÁ TU CLAVE PÚBLICA (SITE KEY)
+  const SITE_KEY = "6Lc34MAtAAAAABEbJ5xdiEhBtCc_zMZP-q06paEn";
+
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={SITE_KEY}>
+      <InnerContactForm className={className} />
+    </GoogleReCaptchaProvider>
   );
 }
