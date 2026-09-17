@@ -62,7 +62,7 @@ export default function CalculatorWidget() {
                 <input
                     type="range"
                     min="10000"
-                    max="50000000000"
+                    max="10000000000"
                     step="10000"
                     value={valorNumerico}
                     onChange={(e) => setMonto(Number(e.target.value))}
