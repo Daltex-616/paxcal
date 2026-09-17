@@ -4,7 +4,6 @@ import HeroText from "./components/HeroText";
 import CalculatorWidget from "./components/CalculatorWidget";
 import InfoSection from "./components/InfoSection";
 import Footer from './components/Footer'
-import ContactForm from "./components/ContactForm";
 export default function PaxWalletLanding() {
   return (
     <div className="min-h-screen font-[var(--font-family-body)] text-[var(--color-gris-texto)] bg-white">
@@ -38,7 +37,6 @@ export default function PaxWalletLanding() {
 
       {/* SECCIÓN INFORMATIVA INFERIOR */}
       <InfoSection />
-      <ContactForm />
       <Footer />
     </div>
   );

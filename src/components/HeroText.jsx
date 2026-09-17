@@ -24,9 +24,9 @@ export default function HeroText() {
             {/* Botón convertido en Enlace */}
             <div className="pt-2">
                 <a 
-                    href="https://paxmanager.ai/" /* <-- ACÁ VA TU LINK */
-                    target="_blank" /* (Opcional) Abre el link en una pestaña nueva */
-                    rel="noopener noreferrer" /* Seguridad recomendada al usar target="_blank" */
+                    href="https://paxmanager.ai/#contacto" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
                     className="inline-block bg-[var(--color-violeta)] hover:bg-[var(--color-violeta-oscuro)] text-white font-bold py-3 px-8 rounded-lg transition-colors text-lg shadow-md cursor-pointer"
                 >
                     ¡Conoce más!
