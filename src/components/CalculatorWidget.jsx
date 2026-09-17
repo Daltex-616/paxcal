@@ -6,7 +6,7 @@ export default function CalculatorWidget() {
 
     // Tasas ajustadas
     const tasaPax = 0.005; // 0.5%
-    const tasaCodigoBarra = 0.035; // 3.5%
+    const tasaCodigoBarra = 0.025; // 2.5%
     const tasaOtras = 0.05; // 5%
 
     const valorNumerico = monto || 0;
@@ -86,7 +86,7 @@ export default function CalculatorWidget() {
                 {/* Cod. Barra */}
                 <div className="flex flex-col items-center justify-end h-full">
                     <div className="text-center mb-2">
-                        <p className="text-[10px] sm:text-xs font-bold text-[var(--color-violeta-oscuro)] leading-tight">Cod. Barra<br /><span className="text-[9px] sm:text-[10px] text-gray-500 font-normal">(3.5%)</span></p>
+                        <p className="text-[10px] sm:text-xs font-bold text-[var(--color-violeta-oscuro)] leading-tight">Cod. Barra<br /><span className="text-[9px] sm:text-[10px] text-gray-500 font-normal">(2.5%)</span></p>
                         <p className="text-xs sm:text-sm font-bold text-red-500">{formatCurrency(costoCodigoBarra)}</p>
                     </div>
                     <div className="w-[30px] sm:w-[45px] bg-red-500 rounded-t-md transition-all duration-500" style={{ height: '50%' }}></div>
@@ -107,7 +107,7 @@ export default function CalculatorWidget() {
             <div className="bg-[var(--color-gris-fondo)] rounded-2xl p-4 sm:p-5 flex items-center justify-between border border-gray-100">
                 <div>
                     <p className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
-                        Ahorro usando Pax Wallet (5%):
+                        Ahorro usando Pax Wallet (0.5%):
                     </p>
                     <p className="text-2xl sm:text-3xl font-black text-[var(--color-violeta-oscuro)] font-[var(--font-family-heading)]">
                         {formatCurrency(ahorro)}
