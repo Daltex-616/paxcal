@@ -1,41 +1,9 @@
 import React, { useState } from 'react';
-// Si no tienes lucide-react para el ícono del sobre, instálalo o usa otro SVG/ícono.
 import { Mail } from 'lucide-react'; 
 
 export default function ContactForm({ className = "" }) {
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  // Clave del sitio para reCAPTCHA v3 (extraída de tu script original)
-  const SITE_KEY = "6LeoauMrAAAAAGAZUo0Ejrj9Lm-HkeaAtAglxi-G";
-
-  const loadRecaptcha = () => {
-    return new Promise((resolve, reject) => {
-      if (window.grecaptcha && typeof window.grecaptcha.ready === "function") {
-        window.grecaptcha.ready(() => resolve(window.grecaptcha));
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
-      script.async = true;
-      script.onerror = () => reject(new Error("No se pudo cargar reCAPTCHA"));
-      script.onload = () => {
-        if (window.grecaptcha && typeof window.grecaptcha.ready === "function") {
-          window.grecaptcha.ready(() => resolve(window.grecaptcha));
-        } else {
-          reject(new Error("reCAPTCHA no disponible"));
-        }
-      };
-      document.head.appendChild(script);
-    });
-  };
-
-  const executeRecaptcha = async () => {
-    const client = await loadRecaptcha();
-    if (!client || typeof client.execute !== "function") return null;
-    return client.execute(SITE_KEY, { action: "formis_embed_submit" });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,16 +15,7 @@ export default function ContactForm({ className = "" }) {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      // 1. Obtener token de reCAPTCHA
-      if (SITE_KEY) {
-        const token = await executeRecaptcha();
-        if (!token) {
-          throw new Error("No se pudo validar la protección anti-spam. Reintentá en unos segundos.");
-        }
-        data._recaptcha = token;
-      }
-
-      // 2. Enviar datos al endpoint original
+      // Hacemos el envío directo sin reCAPTCHA
       const response = await fetch("https://www.formis.online/api/submit/X8Lc2Rm5eqTvCmb8HnYtuNDAhYu2/TW66kfLHA4QE62PWnZ9D", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -161,7 +120,7 @@ export default function ContactForm({ className = "" }) {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full md:w-auto bg-transparent border border-[var(--color-amarillo)] cursor-pointer text-xl text-[var(--color-amarillo)] font-bold px-10 py-4 rounded-lg hover:bg-[var(--color-amarillo)] hover:text-gray-900 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full md:w-auto bg-transparent border border-[var(--color-amarillo)] cursor-pointer text-xl text-[var(--color-amarillo)] font-bold px-10 py-4 rounded-lg hover:bg-[var(--color-amarillo)] hover:text-[var(--color-violeta-oscuro)] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Enviando..." : "Enviar mensaje"}
               </button>
